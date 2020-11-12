@@ -8,10 +8,11 @@ if len(sys.argv) > 1:
     clinetOrServer = sys.argv[1]
     if      clinetOrServer.lower() == 'c' or clinetOrServer.lower() == 'client':
         client = Client.Client()
-        client.connectToServer()
-        #client.sendHello(c)
-        client.killServer(client)
-        client.closeConnection(client)
+        # clientConn = client.connectToServer()
+        # # client.sendHello(clientConn)
+        # client.receiveRsaPublicKey(clientConn)
+        # client.killServer(clientConn)
+        # client.closeConnection(clientConn)
     elif    clinetOrServer.lower() == 's' or clinetOrServer.lower() == 'server':
         Server.Server()
     else:

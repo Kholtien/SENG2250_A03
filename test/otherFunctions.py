@@ -1,37 +1,15 @@
 from random import randrange, getrandbits
 
-# def powmod(base, exponent, modulus):
-#     if modulus == 1:
-#         return 0
-#     t = 1
-#     rs = 1
-#     while t <= exponent:
-#         rs = (rs * base) % modulus
-#         t = t + 1
-#     return rs
-
-def powmod(base, exponent, modulus) : 
-    res = 1     # Initialize result 
-  
-    # Update x if it is more 
-    # than or equal to p 
-    base = base % modulus  
-      
-    if (base == 0) : 
+def powmod(base, exponent, modulus):
+    if modulus == 1:
         return 0
-  
-    while (exponent > 0) : 
-          
-        # If e is odd, multiply 
-        # b with result 
-        if ((exponent & 1) == 1) : 
-            res = (res * base) % modulus 
-  
-        # e must be even now 
-        exponent = exponent >> 1      # e = e/2 
-        base = (base * base) % modulus 
-          
-    return res
+    t = 1
+    rs = 1
+    while t <= exponent:
+        rs = (rs * base) % modulus
+        t = t + 1
+    return rs
+
 
 def is_prime(n, k=128):
     """ Test if a number is prime
@@ -103,8 +81,3 @@ def findModInverse(a, m):
     else:
         return x % m
 
-def rsaEncrypt(message,e,n):
-    return powmod(message,e,n)
-
-def rsaDecrypt(message,d,n):
-    return powmod(message,d,n)

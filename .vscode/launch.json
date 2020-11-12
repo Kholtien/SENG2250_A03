@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "client",
+            "type": "python",
+            "request": "launch",
+            "program": "A03.py",
+            "console": "externalTerminal",
+            "args": ["c"]
+        },
+        {
+            "name": "server",
+            "type": "python",
+            "request": "launch",
+            "program": "A03.py",
+            "console": "externalTerminal",
+            "args": ["s"]
+        },
+        {
+            "name": "run this file",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "externalTerminal"
+        }
+    ]
+}
