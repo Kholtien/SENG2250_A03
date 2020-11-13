@@ -103,8 +103,3 @@ def findModInverse(a, m):
     else:
         return x % m
 
-def rsaEncrypt(message,e,n):
-    return powmod(message,e,n)
-
-def rsaDecrypt(message,d,n):
-    return powmod(message,d,n)
