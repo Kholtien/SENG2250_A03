@@ -1,19 +1,10 @@
-import sys
-sys.path.append('../otherFunctions')
+from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
 
-import otherFunctions
+key = get_random_bytes(16)
+cipher = AES.new(key, AES.MODE_EAX)
+ciphertext, tag = cipher.encrypt_and_digest(data)
 
-
-e       = 65537
-p       = otherFunctions.generate_prime_number(1024)      
-q       = otherFunctions.generate_prime_number(1024)      
-n       = p * q               
-Toitent = (p - 1) * (q - 1)
-
-d       = otherFunctions.findModInverse(e,Toitent)
-
-print(d)
-
-print('done')
-
-print(otherFunctions.powmod(int('hello'.encode()),e,n))
+file_out = open("encrypted.bin", "wb")
+[ file_out.write(x) for x in (cipher.nonce, tag, ciphertext) ]
+file_out.close()

@@ -4,6 +4,7 @@ import random
 import hashlib
 from diffieHellman import diffieHellman as dh
 from RSA_A03 import rsa
+from Cryptodome.Cipher import AES
 
 class Server:
     def __init__(self):
@@ -102,19 +103,3 @@ class Server:
                     print('no match on message')
 
             conn.close()
-
-            
-
-#        while True:
-#            c, addr = s.accept()     # Establish connection with client.
-#            print('Got connection from', addr)
-#            c.send(b'Thank you for connecting')
-#            message = c.recv(1024).decode('ascii')
-#            data = self.receiveMessage(message,c)
-#            print(data)
-#            if data == 'closeServer':
-#                c.close()
-#                break
-#            #c.close()                # Close the connection
-
-        return s

@@ -4,6 +4,7 @@ import random
 import hashlib
 from diffieHellman import diffieHellman as dh
 from RSA_A03 import rsa
+from Cryptodome.Cipher import AES
 
 class Client:
     def __init__(self):
@@ -89,3 +90,5 @@ class Client:
         self.diffieHellman.key = self.diffieHellman.calcSharedPrivate(dhStep1[2])
         print('Secret key is',self.diffieHellman.key)
         
+
+        messageToEncrypt = 
