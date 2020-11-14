@@ -12,7 +12,7 @@ This demonstration required two instances of a terminal from which to run python
 
 In the first terminal, once in the directory, run the command `python ./A03.py s` to start the server instance.
 
-Wait up to 10 seconds for the server to initialize, it is calculating the information for the RSA connection. Once you see `Waiting for connection.` then proceed
+Wait up to 10 seconds for the server to initialize, it is calculating the information for the RSA connection. Once you see `Waiting for connection.` then proceed.
 
 In the second terminal, once in the directory, run the command `python ./A03.py c` to start the client.
 
