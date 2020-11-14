@@ -2,7 +2,7 @@
 
 Tested on Windows 10 20H2 Python 3.8.5 and 3.9.0 and Ubuntu 20.04 Python 3.8.5
 
-github repo: 
+github repo: <https://github.com/Kholtien/SENG2250_A03>
 
 requires the installation of pycryptodomex
 
@@ -14,10 +14,10 @@ In the first terminal, once in the directory, run the command `python ./A03.py s
 
 Wait up to 10 seconds for the server to initialize, it is calculating the information for the RSA connection. Once you see `Waiting for connection.` then proceed
 
-In the second terminal, once in the directory, run the command `python ./A03.py c` to start the client. 
+In the second terminal, once in the directory, run the command `python ./A03.py c` to start the client.
 
-This will connect the two terminals and the program will run through a setup phase, SSL handshake phase, then a data excahnge phase. 
+This will connect the two terminals and the program will run through a setup phase, SSL handshake phase, then a data excahnge phase.
 
-Once this is complete, the server will continue to run until exited and the client will disconnect from the server. 
+Once this is complete, the server will continue to run until exited and the client will disconnect from the server.
 
-You can now run `python ./A03.py c` again to run another instance of the client. 
+You can now run `python ./A03.py c` again to run another instance of the client.
