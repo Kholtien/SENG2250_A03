@@ -1,5 +1,9 @@
 # SENG2250 A03
 
+Tested on Windows 10 20H2 Python 3.8.5 and 3.9.0 and Ubuntu 20.04 Python 3.8.5
+
+github repo: 
+
 requires the installation of pycryptodomex
 
 you can do this by `pip3 install pycrytpodomex` (or `pip install pycryptodomex` depending on your PATH settings)
