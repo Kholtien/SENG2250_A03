@@ -4,6 +4,7 @@ import random
 import hashlib
 from diffieHellman import diffieHellman as dh
 from RSA_A03 import rsa
+from CBC_A03 import cbc
 from Cryptodome.Cipher import AES
 
 class Server:
@@ -63,15 +64,15 @@ class Server:
                     
 
                     print('\nGenerating SID')
-                    SID = random.randrange(999999999)
-                    while SID == self.ServerID:
-                        SID = random.randrange(999999999)
-                    print('SID:',SID)
+                    sid = random.randrange(999999999)
+                    while sid == self.ServerID:
+                        sid = random.randrange(999999999)
+                    print('SID:',sid)
 
                     # rsaSignatureHash = hashlib.sha256(str((self.ServerID,SID)).encode())
                     # rsaSignatureHashInt = int('0x'+rsaSignatureHash.hexdigest(),16)
                     # server_Hello = (rsa.rsaEncrypt(rsaSignatureHashInt,self.RSA.d,self.RSA.n),self.ServerID,SID)
-                    server_Hello = rsa.tupleToRsaSignatureAndTuple((self.ServerID,SID),self.RSA.d,self.RSA.n)
+                    server_Hello = rsa.tupleToRsaSignatureAndTuple((self.ServerID,sid),self.RSA.d,self.RSA.n)
 
                     print('sending Server_Hello')
                     conn.send(str(server_Hello).encode())
@@ -99,8 +100,30 @@ class Server:
 
 
                     print('\n\n\nNow starting Data Exchange\n\n')
-                    
 
+                    
+                    DEmessageServer = 'this message is somehow crazily enough exactly sixty four bytes.'
+                    k_ = hashlib.sha256(self.diffieHellman.key.to_bytes(1024,'big')).digest()
+                    DEhmacServer = cbc.hmac(k_,DEmessageServer)
+                    DEcbcServer = cbc.CBCencrypt(DEmessageServer,k_,sid)
+                    DEtoSend = (DEcbcServer,int.from_bytes(DEhmacServer,'big'))
+                    print('sending message',DEmessageServer,'as',DEtoSend)
+                    conn.send(str(DEtoSend).encode())
+                    print('sent.')
+
+                    print('\n\nNow Receiving')
+
+                    DEencryptedClient,DEhmacClient = rsa.rsaBytesToTuple(conn.recv(4096))
+                    DEencryptedClient = DEencryptedClient.replace('\'','')
+                    DEhmacClient = int(DEhmacClient)
+                    DEmessageClient = cbc.CBCdecrypt(DEencryptedClient,k_,sid)
+                    calculatedHmac = int.from_bytes(cbc.hmac(k_,DEmessageClient),'big')
+                    if DEhmacClient == calculatedHmac:
+                        print('HMAC verified')
+                        print('Received: "',DEmessageClient,'"',sep='')
+                    else:
+                        print('HMAC does not match')
+                        raise Exception("RSA signature does not match. Intruder Alert!")
 
                 elif not message:
                     break

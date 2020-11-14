@@ -104,7 +104,7 @@ def hmac(k,m):
     kXORipad = byteXOR(k,ipad)
     kXORopad = byteXOR(k,opad)
 
-    return hashlib.sha256(concatBytes(kXORopad,hashlib.sha256(concatBytes(kXORipad,message.encode())).digest())).digest()
+    return hashlib.sha256(concatBytes(kXORopad,hashlib.sha256(concatBytes(kXORipad,m.encode())).digest())).digest()
 
 def concatBytes(a,b):
     """

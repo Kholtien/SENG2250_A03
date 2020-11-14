@@ -31,9 +31,19 @@ def tupleToRsaSignatureAndTuple(tupleToEncrypt,e,n):
 
 def rsaBytesToTuple(message):
     messageAsString = message.decode()
-
-    out = tuple(map(int, messageAsString.replace('(','').replace(')','').split(', ')))
-    return out
+    # try:
+    #     out = tuple(map(int, messageAsString.replace('(','').replace(')','').split(', ')))
+    # else:
+    #     out = tuple(messageAsString.replace('(','').replace(')','').split(', '))
+    try:
+        out = tuple(map(int, messageAsString.replace('(','').replace(')','').split(', ')))
+    except:
+        out = tuple(messageAsString.replace('(','').replace(')','').split(', '))
+    finally:
+        return out
+    
+    
+    # return out
 
 def verifySignatureTuple(toVerify,rsaKey):
     encryptedRsaSignature = toVerify[0]

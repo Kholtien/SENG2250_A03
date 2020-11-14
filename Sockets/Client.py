@@ -4,6 +4,7 @@ import random
 import hashlib
 from diffieHellman import diffieHellman as dh
 from RSA_A03 import rsa
+from CBC_A03 import cbc
 # from Cryptodome.Cipher import AES
 
 class Client:
@@ -65,7 +66,7 @@ class Client:
         serverAndSID = rsa.verifySignatureTuple(Server_Hello,RsaPublicKey)
         print('received Server_Hello as:',serverAndSID)
         serverID = serverAndSID[0]
-        SID = serverAndSID[1]
+        sid = serverAndSID[1]
         
 
         print('\n\nStarting Ephemeral DH exchange')
@@ -89,6 +90,35 @@ class Client:
 
         self.diffieHellman.key = self.diffieHellman.calcSharedPrivate(dhStep1[2])
         print('Secret key is',self.diffieHellman.key)
-        
+
+
+        print('\n\n\nNow starting Data Exchange\n\n')
+        print('receiving.')
+
+        DEmessageClient = 'I have done it again! This message is also exactly 64 bytes wow!'
+        k_ = hashlib.sha256(self.diffieHellman.key.to_bytes(1024,'big')).digest()
+
+        # DErecievedMessage = s.recv(4096).decode()
+
+        DEencryptedServer,DEhmacServer = rsa.rsaBytesToTuple(s.recv(4096))
+        DEencryptedServer = DEencryptedServer.replace('\'','')
+        DEhmacServer = int(DEhmacServer)
+        DEmessageServer = cbc.CBCdecrypt(DEencryptedServer,k_,sid)
+        calculatedHmac = int.from_bytes(cbc.hmac(k_,DEmessageServer),'big')
+        if DEhmacServer == calculatedHmac:
+            print('HMAC verified')
+            print('Received: "',DEmessageServer,'"',sep='')
+        else:
+            print('HMAC does not match')
+            raise Exception("RSA signature does not match. Intruder Alert!")
+
+        print('\n\nNow sending response')
+
+        DEhmacClient = cbc.hmac(k_,DEmessageClient)
+        DEcbcClient = cbc.CBCencrypt(DEmessageClient,k_,sid)
+        DEtoSend = (DEcbcClient,int.from_bytes(DEhmacClient,'big'))
+        print('sending message',DEmessageClient,'as',DEtoSend)
+        s.send(str(DEtoSend).encode())
+        print('sent.')
 
         # messageToEncrypt = 
