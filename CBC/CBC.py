@@ -100,3 +100,31 @@ def hmac(k,m):
     k_len = len(k)
     opad = int('0x'+'5c'*k_len,16).to_bytes(k_len,'big')
     ipad = int('0x'+'36'*k_len,16).to_bytes(k_len,'big')
+
+    kXORipad = byteXOR(k,ipad)
+    kXORopad = byteXOR(k,opad)
+
+    return hashlib.sha256(concatBytes(kXORopad,hashlib.sha256(concatBytes(kXORipad,message.encode())).digest())).digest()
+
+def concatBytes(a,b):
+    """
+    concatnates to byte types together, order matters. this is basically a||b but in bytes
+    """
+    byteArrayForConcat = bytearray()
+    for i in range(len(a)):
+        byteArrayForConcat.append(a[i])
+    
+    for i in range(len(b)):
+        byteArrayForConcat.append(b[i])
+    
+    return bytes(byteArrayForConcat)
+
+
+def test():
+    key = 101153146228630395303830694709631737433950628137676538287650741735588006718384388996669347164145838162561867995798027180391347274917152763965286860663592510856353735958012961113658933327330290995775717880049638211397218575432070933547824779245933055388430284894534999613188410321834753695155190531750947931967
+    k_hash = hashlib.sha256(key.to_bytes(1024,'big'))
+    k_digest = k_hash.digest()
+    message = 'this message is somehow crazily enough exactly sixty four bytes.'
+
+    print('message:',message)
+    print('hmac:\t',hmac(k_digest,message))
