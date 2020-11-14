@@ -4,7 +4,7 @@ import random
 import hashlib
 from diffieHellman import diffieHellman as dh
 from RSA_A03 import rsa
-from Cryptodome.Cipher import AES
+# from Cryptodome.Cipher import AES
 
 class Client:
     def __init__(self):
@@ -91,4 +91,4 @@ class Client:
         print('Secret key is',self.diffieHellman.key)
         
 
-        messageToEncrypt = 
+        # messageToEncrypt = 

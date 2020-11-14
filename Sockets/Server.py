@@ -97,6 +97,11 @@ class Server:
                     print('Secret key is',self.diffieHellman.key)
 
 
+
+                    print('\n\n\nNow starting Data Exchange\n\n')
+                    
+
+
                 elif not message:
                     break
                 else:
