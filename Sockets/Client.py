@@ -47,19 +47,19 @@ class Client:
         print(s.recv(4096).decode(),'to',host)
         print('\n\nSetup Phase:\n-----------------------')
         client_hello = 'Hello'
-        print('\nClient to Server:',client_hello)
+        print('\nClient to Server:',client_hello,sep='')
         s.send(client_hello.encode())
         
         
         RsaPublicKey = rsa.rsaBytesToTuple(s.recv(4096))
-        print('\nServer to Client: RSA_PK=',RsaPublicKey)
+        print('\nServer to Client: RSA_PK=',RsaPublicKey,sep='')
         # RsaPublicKeyString = s.recv(4096).decode()
         # RsaPublicKey = tuple(map(int, RsaPublicKeyString.replace('(','').replace(')','').split(', ')))
         # print('public Key:\n',RsaPublicKey,'\n')
 
         print('\n\nHandshake Phase:\n-----------------------')
         # print(self.clientID)
-        print('\nClient to Server: IDc=',self.clientID)
+        print('\nClient to Server: IDc=',self.clientID,sep='')
         encryptedClientID = rsa.rsaEncrypt(self.clientID,int(RsaPublicKey[1]),int(RsaPublicKey[0]))
         # print('now sending Client ID:',self.clientID,'as',encryptedClientID)
         s.send(('IDc=' + str(encryptedClientID)).encode())
@@ -72,7 +72,7 @@ class Client:
         # print('received Server_Hello as:',serverAndSID)
         serverID = serverAndSID[0]
         sid = serverAndSID[1]
-        print('\nServer to Client: IDs=',serverID,'SID=',sid)
+        print('\nServer to Client: IDs=',serverID,'SID=',sid,sep='')
         
 
         print('\n\nStarting Ephemeral DH exchange')
@@ -86,7 +86,7 @@ class Client:
         self.diffieHellman.prime = dhStep1[0]
         self.diffieHellman.generator = dhStep1[1]
 
-        print('\nServer to Client: \nRSASignature=',dhStep1Bytes[0],'\nDH_Prime=',dhStep1[0],'\nDH_Generator=',dhStep1[1],'\nDH_server_public_key=',dhStep1[2])
+        print('\nServer to Client: \nRSASignature=',dhStep1Bytes[0],'\nDH_Prime=',dhStep1[0],'\nDH_Generator=',dhStep1[1],'\nDH_server_public_key=',dhStep1[2],sep='')
                     
 
 
@@ -97,7 +97,7 @@ class Client:
 
         s.send(str(sendDiffieHellmanStep2).encode())
         print('Yc=',Yc)
-        print('\nClient to Server: \nRSAEcrypted(Yc)=',sendDiffieHellmanStep2)
+        print('\nClient to Server: \nRSAEcrypted(Yc)=',sendDiffieHellmanStep2,sep='')
 
 
         self.diffieHellman.key = self.diffieHellman.calcSharedPrivate(dhStep1[2])
@@ -117,11 +117,11 @@ class Client:
         DEhmacServer = int(DEhmacServer)
         DEmessageServer = cbc.CBCdecrypt(DEencryptedServer,k_,sid)
         calculatedHmac = int.from_bytes(cbc.hmac(k_,DEmessageServer),'big')
-        print('\nServer to Client: \ncipherText=',DEencryptedServer,'\nHMAC=',DEhmacServer)
+        print('\nServer to Client: \ncipherText=',DEencryptedServer,'\nHMAC=',DEhmacServer,sep='')
 
         if DEhmacServer == calculatedHmac:
             print('HMAC verified')
-            print('plainText=',DEmessageServer)
+            print('plainText=',DEmessageServer,sep='')
         else:
             print('HMAC does not match')
             raise Exception("RSA signature does not match. Intruder Alert!")
@@ -133,8 +133,8 @@ class Client:
         DEhmacClient = cbc.hmac(k_,DEmessageClient)
         DEcbcClient = cbc.CBCencrypt(DEmessageClient,k_,sid)
         DEtoSend = (DEcbcClient,int.from_bytes(DEhmacClient,'big'))
-        print('\n\n\nplainText=',DEmessageClient)
-        print('\nServer to Client: \ncipherText=',DEcbcClient,'\nHMAC=',int.from_bytes(DEhmacClient,'big'))
+        print('\n\n\nplainText=',DEmessageClient,sep='')
+        print('\nClient to Server: \ncipherText=',DEcbcClient,'\nHMAC=',int.from_bytes(DEhmacClient,'big'),sep='')
         # print('sending message',DEmessageClient,'as',DEtoSend)
         s.send(str(DEtoSend).encode())
         # print('sent.')

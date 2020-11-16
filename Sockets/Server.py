@@ -53,8 +53,8 @@ class Server:
                     break
                 
                 if      message == b'Hello':
-                    print('\nClient to Server:',message.decode())
-                    print('\nServer to Client: RSA_PK=',self.RSA.publicKey)
+                    print('\nClient to Server:',message.decode(),sep='')
+                    print('\nServer to Client: RSA_PK=',self.RSA.publicKey,sep='')
                     conn.send(str(self.RSA.publicKey).encode())
                     # print('Sent RSA Public Key')
                 elif      message.decode()[0:3] == 'IDc':
@@ -62,7 +62,7 @@ class Server:
                     # print('Client to Server:',message.decode()[0:len(message.decode())])
                     encryptedClientID = int(message.decode()[4:len(message.decode())])
                     clientID = rsa.rsaDecrypt(encryptedClientID,self.RSA.d,self.RSA.n)
-                    print('\nClient to Server: IDc=',clientID)
+                    print('\nClient to Server: IDc=',clientID,sep='')
                     
 
                     # print('\nGenerating SID')
@@ -76,7 +76,7 @@ class Server:
                     # server_Hello = (rsa.rsaEncrypt(rsaSignatureHashInt,self.RSA.d,self.RSA.n),self.ServerID,SID)
                     server_Hello = rsa.tupleToRsaSignatureAndTuple((self.ServerID,sid),self.RSA.d,self.RSA.n)
 
-                    print('\nServer to Client: IDs=',self.ServerID,'SID=',sid)
+                    print('\nServer to Client: IDs=',self.ServerID,'SID=',sid,sep='')
                     conn.send(str(server_Hello).encode())
 
                     print('\n\nStarting Ephemeral DH exchange')
@@ -87,14 +87,14 @@ class Server:
                     dhStep1 = (self.diffieHellman.prime,self.diffieHellman.generator,Ys)
                     sendDiffieHellman1 = rsa.tupleToRsaSignatureAndTuple(dhStep1,self.RSA.d,self.RSA.n)
 
-                    print('\nServer to Client: \nRSASignature=',sendDiffieHellman1[0],'\nDH_Prime=',dhStep1[0],'\nDH_Generator=',dhStep1[1],'\nDH_server_public_key=',dhStep1[2])
+                    print('\nServer to Client: \nRSASignature=',sendDiffieHellman1[0],'\nDH_Prime=',dhStep1[0],'\nDH_Generator=',dhStep1[1],'\nDH_server_public_key=',dhStep1[2],sep='')
                     conn.send(str(sendDiffieHellman1).encode())
                     
                     
                     dhStep2 = conn.recv(4096)
-                    print('\nClient to Server: \nRSAEcrypted(Yc)=',dhStep2.decode())
+                    print('\nClient to Server: \nRSAEcrypted(Yc)=',dhStep2.decode(),sep='')
                     Yc = rsa.rsaDecrypt(int(dhStep2.decode()),self.RSA.d,self.RSA.n)
-                    print('Decrypted: Yc=',Yc)
+                    print('Decrypted: Yc=',Yc,sep='')
 
                     self.diffieHellman.key = self.diffieHellman.calcSharedPrivate(Yc)
                     print('Shared Secret key is',self.diffieHellman.key)
@@ -109,8 +109,8 @@ class Server:
                     DEhmacServer = cbc.hmac(k_,DEmessageServer)
                     DEcbcServer = cbc.CBCencrypt(DEmessageServer,k_,sid)
                     DEtoSend = (DEcbcServer,int.from_bytes(DEhmacServer,'big'))
-                    print('plainText=',DEmessageServer)
-                    print('\nServer to Client: \ncipherText=',DEcbcServer,'\nHMAC=',int.from_bytes(DEhmacServer,'big'))
+                    print('plainText=',DEmessageServer,sep='')
+                    print('\nServer to Client: \ncipherText=',DEcbcServer,'\nHMAC=',int.from_bytes(DEhmacServer,'big'),sep='')
                     conn.send(str(DEtoSend).encode())
 
                     # print('\n\nNow Receiving')
@@ -120,8 +120,8 @@ class Server:
                     DEhmacClient = int(DEhmacClient)
                     DEmessageClient = cbc.CBCdecrypt(DEencryptedClient,k_,sid)
                     calculatedHmac = int.from_bytes(cbc.hmac(k_,DEmessageClient),'big')
-                    print('\nClient to Server: \ncipherText=',DEencryptedClient,'\nHMAC=',DEhmacClient)
-                    print('plainText=',DEmessageClient)
+                    print('\nClient to Server: \ncipherText=',DEencryptedClient,'\nHMAC=',DEhmacClient,sep='')
+                    print('plainText=',DEmessageClient,sep='')
                     if DEhmacClient == calculatedHmac:
                         print('HMAC verified')
                         # print('Received: "',DEmessageClient,'"',sep='')
